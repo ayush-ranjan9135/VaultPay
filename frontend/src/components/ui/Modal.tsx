@@ -37,7 +37,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth, maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
         <Card className="modal-content" noPadding style={{ display: 'flex', flexDirection: 'column', maxHeight: '100%', overflow: 'hidden' }}>
           
-          {(title || onClose) && (
+          {true && (
             <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--color-border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               {title && <h2 className="text-h3" style={{ margin: 0 }}>{title}</h2>}
               {onClose && (

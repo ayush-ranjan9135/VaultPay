@@ -9,7 +9,7 @@ export interface Column<T> {
 export interface TableProps<T> {
   data: T[];
   columns: Column<T>[];
-  keyExtractor: (item: T) => string;
+  keyExtractor: (item: T, index: number) => string;
   emptyMessage?: string;
   onRowClick?: (item: T) => void;
 }
@@ -41,9 +41,9 @@ export const Table = <T extends any>({
               </td>
             </tr>
           ) : (
-            data.map((item) => (
+            data.map((item, index) => (
               <tr 
-                key={keyExtractor(item)} 
+                key={keyExtractor(item, index)} 
                 onClick={() => onRowClick?.(item)}
                 style={{ 
                   cursor: onRowClick ? 'pointer' : 'default',
