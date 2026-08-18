@@ -96,7 +96,7 @@ export const updateClientAdmin = catchAsync(async (req: Request, res: Response, 
 });
 
 export const createInvoice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { clientId, dueDate, items, notes } = req.body;
+  const { clientId, dueDate, items, notes, status } = req.body;
   
   let subtotal = 0;
   items.forEach((item: any) => {
@@ -114,7 +114,7 @@ export const createInvoice = catchAsync(async (req: Request, res: Response, next
     clientId,
     issueDate: new Date(),
     dueDate,
-    status: 'DRAFT',
+    status: status || 'DRAFT',
     subtotal,
     tax,
     total,

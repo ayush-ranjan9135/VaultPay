@@ -64,6 +64,7 @@ const AdminInvoices: React.FC = () => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [notes, setNotes] = useState('');
+  const [status, setStatus] = useState('DRAFT');
 
   useEffect(() => {
     fetchInvoices();
@@ -124,6 +125,7 @@ const AdminInvoices: React.FC = () => {
         clientId,
         dueDate,
         notes,
+        status,
         items: [{ description, quantity: 1, unitPrice: amountInCents, amount: amountInCents }]
       });
       closeModal();
@@ -142,6 +144,7 @@ const AdminInvoices: React.FC = () => {
     setDescription('');
     setAmount('');
     setNotes('');
+    setStatus('DRAFT');
   };
 
   const formatCurrency = (cents: number) => {
@@ -304,6 +307,21 @@ const AdminInvoices: React.FC = () => {
                 <p className="text-body font-semibold" style={{ margin: 0, color: 'var(--color-text-strong)' }}>
                   {getSelectedClient()?.firstName} {getSelectedClient()?.lastName}
                 </p>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Invoice Status</label>
+                <select 
+                  className="form-input"
+                  style={{ width: '100%', marginBottom: '1rem' }}
+                  value={status}
+                  onChange={e => setStatus(e.target.value)}
+                >
+                  <option value="DRAFT">Draft</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="PAID">Paid</option>
+                  <option value="OVERDUE">Overdue</option>
+                </select>
               </div>
 
               <Input
