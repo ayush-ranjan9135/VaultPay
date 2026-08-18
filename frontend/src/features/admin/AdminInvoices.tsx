@@ -177,8 +177,8 @@ const AdminInvoices: React.FC = () => {
       header: 'Client',
       render: (inv) => (
         <>
-          <div style={{ fontWeight: 500, color: 'var(--color-text-strong)' }}>{inv.clientId.firstName} {inv.clientId.lastName}</div>
-          <div className="text-caption text-muted">{inv.clientId.email}</div>
+          <div style={{ fontWeight: 500, color: 'var(--color-text-strong)' }}>{inv.clientId?.firstName || 'Unknown'} {inv.clientId?.lastName || 'Client'}</div>
+          <div className="text-caption text-muted">{inv.clientId?.email || 'N/A'}</div>
         </>
       )
     },
@@ -383,9 +383,9 @@ const AdminInvoices: React.FC = () => {
               
               <div style={{ marginBottom: '2rem', padding: '1.5rem', backgroundColor: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-md)' }}>
                 <h5 className="text-caption text-muted" style={{ margin: '0 0 0.5rem 0', textTransform: 'uppercase' }}>Billed To</h5>
-                <p className="text-body font-semibold" style={{ margin: 0 }}>{viewInvoice.clientId.firstName} {viewInvoice.clientId.lastName}</p>
-                <p className="text-body text-muted" style={{ margin: 0 }}>{viewInvoice.clientId.email}</p>
-                {viewInvoice.clientId.companyName && <p className="text-body text-muted" style={{ margin: 0 }}>{viewInvoice.clientId.companyName}</p>}
+                <p className="text-body font-semibold" style={{ margin: 0 }}>{viewInvoice.clientId?.firstName || 'Unknown'} {viewInvoice.clientId?.lastName || 'Client'}</p>
+                <p className="text-body text-muted" style={{ margin: 0 }}>{viewInvoice.clientId?.email || 'N/A'}</p>
+                {viewInvoice.clientId?.companyName && <p className="text-body text-muted" style={{ margin: 0 }}>{viewInvoice.clientId.companyName}</p>}
               </div>
 
               <Table 
