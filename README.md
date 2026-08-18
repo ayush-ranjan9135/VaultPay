@@ -16,7 +16,8 @@ A secure B2B invoice management and payment platform designed to streamline invo
 - [3. ❗ Problem Statement](#3--problem-statement)
 - [4. 💡 Solution](#4--solution)
 - [5. ✨ Key Features](#5--key-features)
-- [6. 👥 User Roles](#6--user-roles)
+- [6. 📸 Project Screenshots](#6--project-screenshots)
+- [7. 👥 User Roles](#7--user-roles)
 - [7. 🔄 Application Flow](#7--application-flow)
 - [8. 🏗️ High-Level Architecture](#8--high-level-architecture)
 - [9. 🚀 Tech Stack](#9--tech-stack)
@@ -83,7 +84,23 @@ VaultPay solves these problems by providing an end-to-end, role-based billing ec
 
 ---
 
-## 6. 👥 User Roles
+## 6. 📸 Project Screenshots
+
+### Secure Login & Role-Based Access
+![Login Screen](./image/login-page.png)
+
+### Admin Dashboard
+![Admin Dashboard](./image/admin%20Dashboard.png)
+
+### Invoice Generation
+![Create Invoice Modal](./image/Invoices.png)
+
+### Client Portal & Payments
+![Client Dashboard](./image/client%20Dashboard.png)
+
+---
+
+## 7. 👥 User Roles
 
 | Role | Capabilities | Authorization Boundary |
 |------|--------------|------------------------|
