@@ -78,6 +78,23 @@ export const createClient = catchAsync(async (req: Request, res: Response, next:
   });
 });
 
+export const updateClientAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { firstName, lastName, companyName } = req.body;
+  const client = await User.findById(req.params.id);
+
+  if (!client || client.role !== 'CLIENT') {
+    return next(new AppError('Client not found', 404));
+  }
+
+  if (firstName) client.firstName = firstName;
+  if (lastName) client.lastName = lastName;
+  if (companyName !== undefined) client.companyName = companyName;
+
+  await client.save();
+
+  res.json({ success: true, client });
+});
+
 export const createInvoice = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { clientId, dueDate, items, notes } = req.body;
   

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import api from '../../services/api';
 import { Users, UserPlus, Mail, Building, MoreHorizontal } from 'lucide-react';
+import { Button } from '../../components/ui/Button';
+import { Input } from '../../components/ui/Input';
+import { Modal } from '../../components/ui/Modal';
 
 interface Client {
   _id: string;
@@ -15,6 +18,31 @@ interface Client {
 const AdminClients: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  const [viewClient, setViewClient] = useState<Client | null>(null);
+  const [editClient, setEditClient] = useState<Client | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const handleUpdateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editClient) return;
+    setSaving(true);
+    try {
+      await api.put(`/admin/clients/${editClient._id}`, {
+        firstName: editClient.firstName,
+        lastName: editClient.lastName,
+        companyName: editClient.companyName,
+      });
+      setEditClient(null);
+      fetchClients();
+    } catch (error) {
+      console.error('Failed to update client:', error);
+      alert('Failed to update client');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const fetchClients = async () => {
     try {
@@ -31,6 +59,12 @@ const AdminClients: React.FC = () => {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   return (
     <DashboardLayout>
       <div className="dashboard-section">
@@ -44,7 +78,7 @@ const AdminClients: React.FC = () => {
           </button>
         </div>
 
-        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+        <div className="card" style={{ padding: 0 }}>
           {loading ? (
             <div style={{ padding: '2rem' }}>
               <div className="skeleton" style={{ height: '40px', marginBottom: '1rem' }}></div>
@@ -101,10 +135,29 @@ const AdminClients: React.FC = () => {
                           )}
                         </div>
                       </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button className="btn btn-secondary" style={{ padding: '0.5rem' }} aria-label="More options">
+                      <td style={{ textAlign: 'right', position: 'relative' }}>
+                        <button 
+                          className="btn btn-secondary" 
+                          style={{ padding: '0.5rem' }} 
+                          aria-label="More options"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenDropdown(openDropdown === client._id ? null : client._id);
+                          }}
+                        >
                           <MoreHorizontal size={18} />
                         </button>
+                        
+                        {openDropdown === client._id && (
+                          <div style={{ position: 'absolute', top: '100%', right: '1rem', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border-subtle)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', padding: '0.5rem 0', zIndex: 50, minWidth: '150px', textAlign: 'left' }}>
+                            <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--color-text-main)' }} onClick={() => { setViewClient(client); setOpenDropdown(null); }}>
+                              View Details
+                            </button>
+                            <button style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--color-text-main)' }} onClick={() => { setEditClient(client); setOpenDropdown(null); }}>
+                              Edit Client
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -114,6 +167,84 @@ const AdminClients: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* View Details Modal */}
+      <Modal isOpen={!!viewClient} onClose={() => setViewClient(null)} title="Client Details" maxWidth="450px">
+        {viewClient && (
+          <div style={{ padding: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginBottom: '2rem' }}>
+              <div style={{ 
+                width: '64px', height: '64px', borderRadius: '50%', 
+                background: 'var(--gradient-brand)', color: 'white', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                fontSize: '1.5rem', fontWeight: 700, boxShadow: 'var(--shadow-glow)' 
+              }}>
+                {viewClient.firstName.charAt(0)}{viewClient.lastName.charAt(0)}
+              </div>
+              <div>
+                <h3 className="text-h3" style={{ margin: 0, color: 'var(--color-text-strong)' }}>
+                  {viewClient.firstName} {viewClient.lastName}
+                </h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text-muted)', marginTop: '0.25rem' }}>
+                  <Mail size={14} /> <span>{viewClient.email}</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ background: 'var(--color-bg-subtle)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid var(--color-border-subtle)' }}>
+              <p className="text-caption text-muted" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: 600 }}>
+                <Building size={14} /> Company Information
+              </p>
+              <p className="text-body font-semibold" style={{ color: 'var(--color-text-strong)', fontSize: '1.1rem' }}>
+                {viewClient.companyName || 'No company listed'}
+              </p>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Edit Client Modal */}
+      <Modal isOpen={!!editClient} onClose={() => setEditClient(null)} title="Edit Client" maxWidth="500px">
+        {editClient && (
+          <form onSubmit={handleUpdateClient} style={{ padding: '0.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <Input
+                label="First Name"
+                type="text"
+                value={editClient.firstName}
+                onChange={e => setEditClient({...editClient, firstName: e.target.value})}
+                required
+              />
+              <Input
+                label="Last Name"
+                type="text"
+                value={editClient.lastName}
+                onChange={e => setEditClient({...editClient, lastName: e.target.value})}
+                required
+              />
+            </div>
+            
+            <div style={{ marginTop: '0.5rem' }}>
+              <Input
+                label="Company Name"
+                type="text"
+                value={editClient.companyName || ''}
+                onChange={e => setEditClient({...editClient, companyName: e.target.value})}
+              />
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border-subtle)' }}>
+              <Button type="button" onClick={() => setEditClient(null)} variant="secondary">
+                Cancel
+              </Button>
+              <Button type="submit" isLoading={saving}>
+                Save Changes
+              </Button>
+            </div>
+          </form>
+        )}
+      </Modal>
+
     </DashboardLayout>
   );
 };

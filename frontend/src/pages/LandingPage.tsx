@@ -45,8 +45,8 @@ const LandingPage: React.FC = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <Link to="/login" className="btn btn-secondary" style={{ border: 'none', background: 'transparent' }}>Log in</Link>
-          <Link to="/login" className="btn btn-primary animate-pulse-glow" style={{ borderRadius: 'var(--radius-xl)', padding: '0.75rem 1.5rem', fontWeight: 600 }}>Get Started</Link>
+          <Link to="/login" className="btn btn-secondary" style={{ border: 'none', background: 'transparent', padding: '0.5rem' }}>Log in</Link>
+          <Link to="/login" className="btn btn-primary animate-pulse-glow" style={{ borderRadius: 'var(--radius-xl)', padding: '0.5rem 1rem', fontWeight: 600 }}>Get Started</Link>
         </div>
 
         {/* Scroll Progress Bar */}

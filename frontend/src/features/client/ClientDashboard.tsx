@@ -12,8 +12,8 @@ const ClientDashboard: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await api.get('/client/stats');
-        setStats(data.data);
+        const { data } = await api.get('/client/dashboard');
+        setStats(data.stats);
       } catch (error) {
         console.error('Failed to fetch client stats', error);
       } finally {

@@ -55,17 +55,21 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
 
       await payment.save();
 
-      // 3. Update Invoice Status
-      const invoice = await Invoice.findByIdAndUpdate(
-        invoiceId,
-        { status: 'PAID' },
-        { new: true }
-      );
+      // 3. Amount Verification & Update Invoice Status
+      const invoice = await Invoice.findById(invoiceId);
 
       if (!invoice) {
         console.error(`Invoice ${invoiceId} not found during webhook processing`);
         return res.status(404).send('Invoice not found');
       }
+
+      if (invoice.total !== amount) {
+        console.error(`Amount mismatch for invoice ${invoiceId}. Expected ${invoice.total}, got ${amount}`);
+        return res.status(400).send('Amount mismatch');
+      }
+
+      invoice.status = 'PAID';
+      await invoice.save();
 
       // 4. PDF Generation & Email Delivery
       const client = await User.findById(clientId);

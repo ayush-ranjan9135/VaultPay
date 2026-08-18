@@ -5,6 +5,7 @@ import { Plus, FileText, CheckCircle, Clock, XCircle, FilePlus, X, ArrowRight, A
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { Badge } from '../../components/ui/Badge';
+import { Modal } from '../../components/ui/Modal';
 import { Card } from '../../components/ui/Card';
 import { Table } from '../../components/ui/Table';
 import type { Column } from '../../components/ui/Table';
@@ -68,6 +69,12 @@ const AdminInvoices: React.FC = () => {
     fetchInvoices();
     fetchClients();
   }, [fetchInvoices, fetchClients]);
+
+  useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const handleViewDetails = async (id: string) => {
     setOpenDropdown(null);

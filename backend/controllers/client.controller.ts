@@ -7,25 +7,27 @@ export const getDashboardStats = catchAsync(async (req: Request, res: Response, 
   const userId = (req as any).user.userId;
   const invoices = await Invoice.find({ clientId: userId });
   
-  let outstandingBalance = 0;
-  let totalPaid = 0;
-  let pendingInvoicesCount = 0;
+  let totalAmount = 0;
+  let paidAmount = 0;
+  let pendingAmount = 0;
+  let totalInvoices = invoices.length;
 
   invoices.forEach(inv => {
+    totalAmount += inv.total;
     if (inv.status === 'PAID') {
-      totalPaid += inv.total;
+      paidAmount += inv.total;
     } else if (['PENDING', 'OVERDUE'].includes(inv.status)) {
-      outstandingBalance += inv.total;
-      pendingInvoicesCount++;
+      pendingAmount += inv.total;
     }
   });
 
   res.json({
     success: true,
     stats: {
-      outstandingBalance,
-      totalPaid,
-      pendingInvoicesCount,
+      totalAmount,
+      paidAmount,
+      pendingAmount,
+      totalInvoices,
     }
   });
 });
@@ -95,4 +97,24 @@ export const payInvoice = catchAsync(async (req: Request, res: Response, next: N
   });
 
   res.json({ success: true, checkoutUrl: session.url });
+});
+
+export const downloadInvoicePdf = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = (req as any).user.userId;
+  const { id } = req.params;
+
+  const invoice = await Invoice.findOne({ _id: id, clientId: userId }).populate('clientId', 'email');
+  
+  if (!invoice) {
+    return next(new AppError('Invoice not found', 404));
+  }
+
+  const { generateInvoicePDF } = require('../services/pdf.service');
+  
+  try {
+    const pdfPath = await generateInvoicePDF(invoice, (invoice.clientId as any).email);
+    res.download(pdfPath, `Invoice_${invoice.invoiceNumber}.pdf`);
+  } catch (error) {
+    next(new AppError('Failed to generate PDF', 500));
+  }
 });

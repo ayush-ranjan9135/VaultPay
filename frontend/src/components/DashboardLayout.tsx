@@ -92,9 +92,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <span className="font-bold text-xl">VaultPay</span>
           {/* Mobile Close Button */}
           <button 
-            className="btn btn-secondary" 
+            className="btn btn-secondary mobile-only" 
             onClick={() => setMobileMenuOpen(false)}
-            style={{ marginLeft: 'auto', padding: '4px', display: 'none' /* Will show via CSS media query normally, but handled conditionally here if we had styled components */ }}
+            style={{ marginLeft: 'auto', padding: '4px' }}
             aria-label="Close menu"
           >
             <X size={20} />
@@ -129,9 +129,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             {/* Mobile Hamburger */}
             <button 
-              className="btn btn-secondary"
+              className="btn btn-secondary mobile-only"
               onClick={() => setMobileMenuOpen(true)}
-              style={{ display: 'none' /* handled via CSS usually */ }} 
               aria-label="Open menu"
             >
               <Menu size={20} />

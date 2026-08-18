@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Table } from '../../components/ui/Table';
 import type { Column } from '../../components/ui/Table';
+import { Modal } from '../../components/ui/Modal';
 import { useInvoices } from '../../hooks/useInvoices';
 
 interface Invoice {
@@ -72,6 +73,24 @@ const ClientInvoices: React.FC = () => {
     } catch (error) {
       alert('Failed to initiate payment. Please try again.');
       setPayingId(null);
+    }
+  };
+
+  const handleDownloadReceipt = async (invoiceId: string, invoiceNumber: string) => {
+    try {
+      const response = await api.get(`/client/invoices/${invoiceId}/pdf`, {
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Invoice_${invoiceNumber}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+    } catch (error) {
+      console.error('Download error:', error);
+      alert('Failed to download receipt. Please try again later.');
     }
   };
 
@@ -149,6 +168,7 @@ const ClientInvoices: React.FC = () => {
               variant="secondary"
               title="Download Receipt"
               leftIcon={<Download size={16} />}
+              onClick={() => handleDownloadReceipt(inv._id, inv.invoiceNumber)}
             >
               Receipt
             </Button>

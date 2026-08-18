@@ -11,8 +11,8 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data } = await api.get('/admin/stats');
-        setStats(data.data);
+        const { data } = await api.get('/admin/dashboard');
+        setStats(data.stats);
       } catch (error) {
         console.error('Failed to fetch admin stats', error);
       } finally {
@@ -52,7 +52,7 @@ const AdminDashboard: React.FC = () => {
                   <DollarSign size={20} />
                 </div>
               </div>
-              <div className="stat-value">{formatCurrency(stats?.totalAmount)}</div>
+              <div className="stat-value">{formatCurrency((stats?.totalRevenue || 0) + (stats?.outstandingAmount || 0))}</div>
             </Card>
 
             <Card className="stat-card" style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
@@ -64,7 +64,7 @@ const AdminDashboard: React.FC = () => {
                   <TrendingUp size={20} />
                 </div>
               </div>
-              <div className="stat-value text-success">{formatCurrency(stats?.paidAmount)}</div>
+              <div className="stat-value text-success">{formatCurrency(stats?.totalRevenue || 0)}</div>
             </Card>
 
             <Card className="stat-card" style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
@@ -76,7 +76,7 @@ const AdminDashboard: React.FC = () => {
                   <Clock size={20} />
                 </div>
               </div>
-              <div className="stat-value text-warning">{formatCurrency(stats?.pendingAmount)}</div>
+              <div className="stat-value text-warning">{formatCurrency(stats?.outstandingAmount || 0)}</div>
             </Card>
 
             <Card className="stat-card" style={{ display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
@@ -88,7 +88,7 @@ const AdminDashboard: React.FC = () => {
                   <Users size={20} />
                 </div>
               </div>
-              <div className="stat-value">{stats?.clientCount || 0}</div>
+              <div className="stat-value">{stats?.clientsCount || 0}</div>
             </Card>
           </>
         )}

@@ -22,7 +22,7 @@ export const Table = <T extends any>({
   onRowClick
 }: TableProps<T>) => {
   return (
-    <div style={{ overflowX: 'auto' }}>
+    <div className="table-container">
       <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
