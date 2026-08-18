@@ -19,7 +19,7 @@ export const setAuthCookie = (res: Response, token: string) => {
   res.cookie('token', token, {
     httpOnly: true,
     secure: env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'strict',
     maxAge: 24 * 60 * 60 * 1000, // 1 day
   });
 };
@@ -28,7 +28,7 @@ export const clearAuthCookie = (res: Response) => {
   res.cookie('token', '', {
     httpOnly: true,
     secure: env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'strict',
     expires: new Date(0),
   });
 };
