@@ -106,8 +106,18 @@ export const createInvoice = catchAsync(async (req: Request, res: Response, next
   const tax = Math.round(subtotal * 0.1); // example 10% tax
   const total = subtotal + tax;
 
-  const count = await Invoice.countDocuments();
-  const invoiceNumber = `INV-${String(count + 1).padStart(5, '0')}`;
+  const lastInvoice = await Invoice.findOne().sort({ createdAt: -1 });
+  let nextNumber = 1;
+  if (lastInvoice && lastInvoice.invoiceNumber.startsWith('INV-')) {
+    const lastNumber = parseInt(lastInvoice.invoiceNumber.replace('INV-', ''), 10);
+    if (!isNaN(lastNumber)) {
+      nextNumber = lastNumber + 1;
+    }
+  } else {
+    const count = await Invoice.countDocuments();
+    nextNumber = count + 1;
+  }
+  const invoiceNumber = `INV-${String(nextNumber).padStart(5, '0')}`;
 
   const invoice = new Invoice({
     invoiceNumber,
