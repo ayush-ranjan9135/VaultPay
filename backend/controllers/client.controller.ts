@@ -43,7 +43,7 @@ export const getInvoiceById = catchAsync(async (req: Request, res: Response, nex
   const { id } = req.params;
 
   // IDOR PROTECTION: Must match clientId
-  const invoice = await Invoice.findOne({ _id: id, clientId: userId });
+  const invoice = await Invoice.findOne({ _id: id as any, clientId: userId });
   
   if (!invoice) {
     return next(new AppError('Invoice not found', 404));
@@ -56,7 +56,7 @@ export const payInvoice = catchAsync(async (req: Request, res: Response, next: N
   const userId = (req as any).user.userId;
   const { id } = req.params;
 
-  const invoice = await Invoice.findOne({ _id: id, clientId: userId }).populate('clientId', 'email');
+  const invoice = await Invoice.findOne({ _id: id as any, clientId: userId }).populate('clientId', 'email');
   
   if (!invoice) {
     return next(new AppError('Invoice not found', 404));
@@ -103,7 +103,7 @@ export const downloadInvoicePdf = catchAsync(async (req: Request, res: Response,
   const userId = (req as any).user.userId;
   const { id } = req.params;
 
-  const invoice = await Invoice.findOne({ _id: id, clientId: userId }).populate('clientId', 'email');
+  const invoice = await Invoice.findOne({ _id: id as any, clientId: userId }).populate('clientId', 'email');
   
   if (!invoice) {
     return next(new AppError('Invoice not found', 404));

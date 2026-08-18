@@ -34,7 +34,7 @@ export const generateInvoicePDF = (invoice: IInvoice, clientEmail: string): Prom
 
       // Paid Stamp
       if (invoice.status === 'PAID') {
-        doc.fontSize(30).fillColor('green').text('PAID', 250, 150, { align: 'center', angle: -20 });
+        doc.fontSize(30).fillColor('green').text('PAID', 250, 150, { align: 'center' });
         doc.fillColor('black'); // reset
       }
 
